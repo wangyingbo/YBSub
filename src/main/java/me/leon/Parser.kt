@@ -1,8 +1,5 @@
 package me.leon
 
-import me.leon.support.*
-import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.constructor.Constructor
 import java.security.SecureRandom
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
@@ -10,7 +7,9 @@ import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
-
+import me.leon.support.*
+import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.constructor.Constructor
 
 object Parser {
     private val REG_SCHEMA_HASH = "(\\w+)://([^ #]+)(?:#([^#]+)?)?".toRegex()
@@ -19,20 +18,27 @@ object Parser {
     private val REG_TROJAN = "([^@]+)@([^:]+):(\\d{1,5})(?:\\?(.+))?".toRegex()
 
     init {
-        //信任过期证书
-        val trustAllCerts: Array<TrustManager> = arrayOf(object : X509TrustManager {
-            @Throws(CertificateException::class)
-            override fun checkClientTrusted(chain: Array<X509Certificate?>?, authType: String?) {
-            }
+        // 信任过期证书
+        val trustAllCerts: Array<TrustManager> =
+            arrayOf(
+                object : X509TrustManager {
+                    @Throws(CertificateException::class)
+                    override fun checkClientTrusted(
+                        chain: Array<X509Certificate?>?,
+                        authType: String?
+                    ) {}
 
-            @Throws(CertificateException::class)
-            override fun checkServerTrusted(chain: Array<X509Certificate?>?, authType: String?) {
-            }
+                    @Throws(CertificateException::class)
+                    override fun checkServerTrusted(
+                        chain: Array<X509Certificate?>?,
+                        authType: String?
+                    ) {}
 
-            override fun getAcceptedIssuers(): Array<X509Certificate> {
-                return arrayOf()
-            }
-        })
+                    override fun getAcceptedIssuers(): Array<X509Certificate> {
+                        return arrayOf()
+                    }
+                }
+            )
         // Install the all-trusting trust manager
         try {
             val sc: SSLContext = SSLContext.getInstance("SSL")
@@ -40,9 +46,7 @@ object Parser {
             val sslsc = sc.serverSessionContext
             sslsc.sessionTimeout = 0
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.socketFactory)
-            HttpsURLConnection.setDefaultHostnameVerifier { _, _ ->
-                true
-            }
+            HttpsURLConnection.setDefaultHostnameVerifier { _, _ -> true }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -63,17 +67,18 @@ object Parser {
         "parseV2ray ".debug(uri)
         try {
             REG_SCHEMA_HASH.matchEntire(uri)?.run {
-                return groupValues[2].b64SafeDecode()
+                return groupValues[2]
+                    .b64SafeDecode()
                     .also { "parseV2ray base64 decode: ".debug(it) }
                     .fromJson<V2ray>()
-            } ?: return null
+            }
+                ?: return null
         } catch (e: Exception) {
             e.printStackTrace()
             println(uri)
             "parseV2ray err".debug(uri)
             return null
         }
-
     }
 
     fun parseSs(uri: String): SS? {
@@ -81,19 +86,20 @@ object Parser {
         REG_SCHEMA_HASH.matchEntire(uri)?.run {
             val remark = groupValues[3].urlDecode()
             "parseSs match".debug(groupValues[2])
-            var decoded = groupValues[2].takeUnless { it.contains("@") }?.b64Decode()
-            //兼容异常
+            var decoded =
+                groupValues[2].takeUnless { it.contains("@") }?.b64Decode()
+                // 兼容异常
                 ?: with(groupValues[2]) {
-                    "${substringBefore('@').b64Decode()}${substring(indexOf('@'))}"
-                        .also { "parseSs b64 format correct".debug("___$it") }
-                }
+                        "${substringBefore('@').b64Decode()}${substring(indexOf('@'))}".also {
+                            "parseSs b64 format correct".debug("___$it")
+                        }
+                    }
             decoded.also {
                 "parseSs b64 decode".debug(it)
                 REG_SS.matchEntire(it)?.run {
                     "parseSs ss match".debug(this.groupValues.toString())
-                    return SS(groupValues[1], groupValues[2], groupValues[3], groupValues[4]).apply {
-                        this.remark = remark
-                    }
+                    return SS(groupValues[1], groupValues[2], groupValues[3], groupValues[4])
+                        .apply { this.remark = remark }
                 }
             }
         }
@@ -111,14 +117,19 @@ object Parser {
                     val q = it.groupValues[2].queryParamMapB64()
                     "parseSsr query maps".debug(q.toString())
                     return SSR(
-                        this[0], this[1], this[2], this[3], this[4],
+                        this[0],
+                        this[1],
+                        this[2],
+                        this[3],
+                        this[4],
                         it.groupValues[1].b64SafeDecode(),
                         q["obfsparam"] ?: "",
                         q["protoparam"] ?: "",
-                    ).apply {
-                        remarks = q["remarks"] ?: ""
-                        group = q["group"] ?: ""
-                    }
+                    )
+                        .apply {
+                            remarks = q["remarks"] ?: ""
+                            group = q["group"] ?: ""
+                        }
                 }
             }
         }
@@ -147,47 +158,47 @@ object Parser {
 
     private fun parseFromFileSub(path: String): LinkedHashSet<Sub> {
         "parseFromSub Local".debug(path)
-        val data = path.readText()
-            .b64SafeDecode()
+        val data = path.readText().b64SafeDecode()
         return if (data.contains("proxies:"))
-            (Yaml(Constructor(Clash::class.java)).load(data.replace("!<[^>]+>".toRegex(), "")) as Clash).proxies
+            (Yaml(Constructor(Clash::class.java)).load(data.replace("!<[^>]+>".toRegex(), "")) as
+                    Clash)
+                .proxies
                 .asSequence()
                 .mapNotNull(Node::node)
                 .fold(linkedSetOf()) { acc, sub -> acc.also { acc.add(sub) } }
         else
             data
-//                .also { println(it) }
+                //                .also { println(it) }
                 .split("\r\n|\n".toRegex())
                 .asSequence()
                 .filter { it.isNotEmpty() }
                 .mapNotNull { Pair(it, parse(it)) }
                 .filterNot { it.second is NoSub }
                 .fold(linkedSetOf()) { acc, sub ->
-                    sub.second?.let { acc.add(it) } ?: kotlin.run {
-                        println("parseFromFileSub failed: $sub")
-                    }
+                    sub.second?.let { acc.add(it) }
+                        ?: kotlin.run { println("parseFromFileSub failed: $sub") }
                     acc
                 }
     }
 
     private fun parseFromNetwork(url: String): LinkedHashSet<Sub> {
         "parseFromNetwork".debug(url)
-        val data = url.readFromNet()
-            .b64SafeDecode()
+        val data = url.readFromNet().b64SafeDecode()
 
         return try {
             if (data.contains("proxies:"))
-            //移除yaml中的标签
-                (Yaml(Constructor(Clash::class.java)).load(
-                    data.replace("!<[^>]+>".toRegex(), "").also {
-                        it.debug()
-                    }) as Clash).proxies
+            // 移除yaml中的标签
+            (Yaml(Constructor(Clash::class.java))
+                        .load(data.replace("!<[^>]+>".toRegex(), "").also { it.debug() }) as
+                        Clash)
+                    .proxies
                     .asSequence()
                     .mapNotNull(Node::node)
                     .filterNot { it is NoSub }
                     .fold(linkedSetOf()) { acc, sub -> acc.also { acc.add(sub) } }
             else
-                data.also { "parseFromNetwork".debug(it) }
+                data
+                    .also { "parseFromNetwork".debug(it) }
                     .split("\r\n|\n".toRegex())
                     .asSequence()
                     .filter { it.isNotEmpty() }

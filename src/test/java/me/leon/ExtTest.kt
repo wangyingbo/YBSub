@@ -1,16 +1,10 @@
 package me.leon
 
+import java.io.File
+import java.util.*
 import me.leon.domain.Lanzou
 import me.leon.support.*
 import org.junit.jupiter.api.Test
-import java.io.File
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.util.*
-
 
 class ExtTest {
 
@@ -29,7 +23,6 @@ class ExtTest {
         val url =
             "vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogIvCfh7rwn4e4576O5Zu9IOKYhuKYhiAgMDEg4piGTlRU4piGICAgMS4y5YCN546HIiwNCiAgImFkZCI6ICJiai5rZWFpeXVuLnh5eiIsDQogICJwb3J0IjogIjMxMTAzIiwNCiAgImlkIjogIjQ0MTg5MzQxLTJjYzktM2JlOS1iYjEwLWMxMzVlOThjZDhlYiIsDQogICJhaWQiOiAiMiIsDQogICJzY3kiOiAiYXV0byIsDQogICJuZXQiOiAid3MiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAid3d3LmJhaWR1LmNvbSIsDQogICJwYXRoIjogIi92MnJheSIsDQogICJ0bHMiOiAiIiwNCiAgInNuaSI6ICIiDQp9"
         println(Parser.parseV2ray(url)?.toUri())
-
     }
 
     @Test
@@ -56,8 +49,7 @@ class ExtTest {
             "trojan://4806bfec-c8ca-4688-b513-f6214ea52e58@32vus.ednovas.me:443#Relay_%F0%9F%87%BA%F0%9F%87%B8US-%F0%9F%87%BA%F0%9F%87%B8US_320\n"
         val url2 =
             "trojan://qN7AKCF3@t6.ssrsub.one:8443#Relay_%F0%9F%87%B7%F0%9F%87%BARU-%F0%9F%87%B7%F0%9F%87%BARU_192"
-        val url3 =
-            "trojan://N8l9RGMa@t2.ssrsub.one:8443?sni=t2.ssrsub.one"
+        val url3 = "trojan://N8l9RGMa@t2.ssrsub.one:8443?sni=t2.ssrsub.one"
         println(Parser.parse(url3)?.toUri())
     }
 
@@ -71,7 +63,6 @@ class ExtTest {
             "obfsparam=&protoparam=dC5tZS9TU1JTVUI&remarks=UmVsYXlf8J+HqPCfh6ZDQS3wn4eo8J+HpkNBXzQxOSB8IDMuNTNNYg&group="
         println(q2.queryParamMapB64())
     }
-
 
     @Test
     fun fileTest() {
@@ -106,28 +97,33 @@ class ExtTest {
     fun lanzouDirectLink() {
         val url = "https://www.lanzoux.com/iGqn3f7k4zg"
 
-        url.readFromNet().run { "(/fn\\?\\w{6,})\" frameborder".toRegex().find(this)!!.groupValues[1] }.also {
-            "https://www.lanzoux.com/$it".readFromNet().also {
-                val sign = "(?:pdownload|postdown) = '(\\w+)'".toRegex().find(it)!!.groupValues[1]
-                "https://www.lanzoux.com/ajaxm.php".post(
-                    mutableMapOf(
-                        "action" to "downprocess",
-                        "signs" to "?ctdf",
-                        "sign" to sign,
-                        "ves" to "1",
-                        "websign" to "",
-                        "websignkey" to "u211",
-                    )
-                ).fromJson<Lanzou>().run {
-                    println("${dom}/file/${this.url}")
+        url
+            .readFromNet()
+            .run { "(/fn\\?\\w{6,})\" frameborder".toRegex().find(this)!!.groupValues[1] }
+            .also {
+                "https://www.lanzoux.com/$it".readFromNet().also {
+                    val sign =
+                        "(?:pdownload|postdown) = '(\\w+)'".toRegex().find(it)!!.groupValues[1]
+                    "https://www.lanzoux.com/ajaxm.php"
+                        .post(
+                            mutableMapOf(
+                                "action" to "downprocess",
+                                "signs" to "?ctdf",
+                                "sign" to sign,
+                                "ves" to "1",
+                                "websign" to "",
+                                "websignkey" to "u211",
+                            )
+                        )
+                        .fromJson<Lanzou>()
+                        .run { println("${dom}/file/${this.url}") }
                 }
             }
-        }
     }
 
     @Test
     fun timeZone() {
-        System.setProperty("user.timezone","GMT +04");
+        System.setProperty("user.timezone", "GMT +04")
         println(timeStamp())
         println(timeStamp("GMT-3"))
         println(timeStamp("UTC"))

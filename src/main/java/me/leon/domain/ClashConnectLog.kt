@@ -1,9 +1,6 @@
 package me.leon.domain
 
-data class ClashConnectLog(
-    val proxies: LinkedHashMap<String, Group>
-)
-
+data class ClashConnectLog(val proxies: LinkedHashMap<String, Group>)
 
 data class Group(
     val all: List<String> = mutableListOf(),
@@ -16,11 +13,4 @@ data class Group(
         get() = type !in listOf("Selector", "URLTest", "Reject", "Direct")
 }
 
-data class History(
-    val time: String = "",
-    val delay: Int = 0
-)
-
-
-
-
+data class History(val time: String = "", val delay: Int = 0)

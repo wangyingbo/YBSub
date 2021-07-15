@@ -1,11 +1,11 @@
 package me.leon.ip
 
+import kotlin.system.measureTimeMillis
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import me.leon.FAIL_IPS
 import me.leon.support.*
 import org.junit.jupiter.api.Test
-import kotlin.system.measureTimeMillis
 
 class IpFilterTest {
 
@@ -21,7 +21,8 @@ class IpFilterTest {
         val total = mutableListOf<String>()
 
         measureTimeMillis {
-            FAIL_IPS.readLines()
+            FAIL_IPS
+                .readLines()
                 .also { println("before ${it.size}") }
                 .toHashSet()
                 .sorted()
@@ -33,15 +34,16 @@ class IpFilterTest {
                 }
                 .groupBy { it.contains(':') }
                 .also { map ->
-                    map[true].also { println("带端口节点数量 ${it?.size}") }?.map { it.substringBeforeLast(':') to it }
+                    map[true]
+                        .also { println("带端口节点数量 ${it?.size}") }
+                        ?.map { it.substringBeforeLast(':') to it }
                         ?.forEach { p ->
                             if (okIps.contains(p.first) || failIps.contains(p.first)) {
-//                                    println("已存在")
+                                //                                    println("已存在")
                                 return@forEach
                             }
-                                if (p.first.ping(1000) > -1)
-                                    okIps.add(p.first)
-                                else println(p.second.also { failIps.add(p.first) })
+                            if (p.first.ping(1000) > -1) okIps.add(p.first)
+                            else println(p.second.also { failIps.add(p.first) })
                         }
                 }
 
@@ -62,13 +64,15 @@ class IpFilterTest {
                     FAIL_IPS.writeLine(it.joinToString("\n"))
                     println("after ${it.size}")
                 }
-        }.also { println("time $it ms") }
+        }
+            .also { println("time $it ms") }
     }
 
     private fun deleteOkIps() {
         val total = mutableListOf<String>()
         runBlocking {
-            FAIL_IPS.readLines()
+            FAIL_IPS
+                .readLines()
                 .also {
                     total.addAll(it)
                     println("before ${it.size}")

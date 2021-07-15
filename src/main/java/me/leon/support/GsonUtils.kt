@@ -12,7 +12,8 @@ object GsonUtils {
 
     fun <D> fromJson(json: String?, clazz: Class<D>): D = gson.fromJson(json, clazz)
 
-    fun <D> jsonToList(json: String, clazz: Class<Array<D>>): List<D> = listOf(*gson.fromJson(json, clazz))
+    fun <D> jsonToList(json: String, clazz: Class<Array<D>>): List<D> =
+        listOf(*gson.fromJson(json, clazz))
 
     fun <D> jsonToArrayList(json: String, clazz: Class<D>): List<D> {
         return gson.fromJson<List<JsonObject>>(json, object : TypeToken<List<JsonObject>>() {}.type)
@@ -22,6 +23,9 @@ object GsonUtils {
 }
 
 inline fun <reified D> String.fromJson() = GsonUtils.fromJson(this, D::class.java)
+
 inline fun <reified D> String.fromJsonArray() = GsonUtils.jsonToList(this, Array<D>::class.java)
+
 inline fun <reified D> String.fromJsonList() = GsonUtils.jsonToArrayList(this, D::class.java)
+
 inline fun Any.toJson() = GsonUtils.toJson(this)

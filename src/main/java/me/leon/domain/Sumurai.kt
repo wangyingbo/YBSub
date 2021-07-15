@@ -1,14 +1,8 @@
 package me.leon.domain
 
-data class Sumurai(
-    val code: Int = 0,
-    val `data`: Data = Data(),
-    val msg: String = ""
-)
+data class Sumurai(val code: Int = 0, val `data`: Data = Data(), val msg: String = "")
 
-data class Data(
-    val items: List<Item> = listOf()
-)
+data class Data(val items: List<Item> = listOf())
 
 data class Item(
     val free: Boolean = false,

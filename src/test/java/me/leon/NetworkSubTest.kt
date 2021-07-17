@@ -11,7 +11,8 @@ import java.util.*
 class NetworkSubTest {
     @Test
     fun subParse() {
-        val e = "https://raw.fastgit.org/Leon406/Sub/master/sub/share/tr"
+//        val e = "https://raw.fastgit.org/Leon406/Sub/master/sub/share/tr"
+        val e = "https://api.flgwls.com/link/UUDvI5RqtU5ZC098?clash=1r"
         runBlocking {
             Parser.parseFromSub(e)
                 .map { it to async(DISPATCHER) { it.SERVER.quickConnect(it.serverPort, 1000) } }

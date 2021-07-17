@@ -36,7 +36,8 @@ data class DNS(
     var `fake-ip-range`: String = "",
     var nameserver: List<String> = mutableListOf(),
     var `default-nameserver`: List<String> = mutableListOf(),
-    var fallback: List<String> = mutableListOf()
+    var fallback: List<String> = mutableListOf(),
+    var `fallback-filter`: LinkedHashMap<String, String> = linkedMapOf()
 )
 
 data class Node(

@@ -1,9 +1,6 @@
 package me.leon
 
-/**
- * Clash完整配置
- * https://github.com/Dreamacro/clash/wiki/configuration
- */
+/** Clash完整配置 https://github.com/Dreamacro/clash/wiki/configuration */
 data class Clash(
     var port: Int = 7890,
     var `socks-port`: Int = 7891,
@@ -55,8 +52,7 @@ data class Node(
     var `protocol-param`: String = "",
     var server: String = "",
     var servername: String = "",
-
-    ) {
+) {
     var `ws-headers`: LinkedHashMap<String, String> = linkedMapOf()
     var `http-opts`: LinkedHashMap<String, String> = linkedMapOf()
     var `h2-opts`: LinkedHashMap<String, String> = linkedMapOf()
@@ -74,47 +70,55 @@ data class Node(
     var protocolparam: String = ""
     var obfsparam: String = ""
     fun node(): Sub? {
-        //兼容某些异常节点池
+        // 兼容某些异常节点池
         if (server == "NULL") return NoSub
         return when (type) {
-            //            {"name":"Pool_🇦🇱AL_04","server":"31.171.154.221","type":"ss","country":"🇦🇱AL","port":39772,"password":"CUndSZnYsPKcu6Kj8THVMBHD","cipher":"aes-256-gcm"}
-            "ss" -> SS(cipher, password, server, port.toString()).apply {
-                remark = this@Node.name
-                nation = country
-            }
-            "ssr" -> SSR(
-                server,
-                port.toString(),
-                protocol,
-                cipher,
-                obfs,
-                password,
-                if (obfs == "plain") "" else `obfs-param` + obfs_param + obfsparam,
-                `protocol-param` + `protocol_param` + protocolparam
-            ).apply {
-                remarks = this@Node.name
-                nation = country
-            }
-//
-            "vmess" -> V2ray(
-                aid = alterId,
-                add = server,
-                port = port.toString(),
-                id = uuid,
-                net = network,
-                tls = if (tls) "true" else ""
-            ).apply {
-                path = if (network == "ws") `ws-path` else ""
-                host = if (network == "ws") `ws-headers`["Host"] ?: "" else ""
-                ps = this@Node.name
-                nation = country
-            }
+            //
+            // {"name":"Pool_🇦🇱AL_04","server":"31.171.154.221","type":"ss","country":"🇦🇱AL","port":39772,"password":"CUndSZnYsPKcu6Kj8THVMBHD","cipher":"aes-256-gcm"}
+            "ss" ->
+                SS(cipher, password, server, port.toString()).apply {
+                    remark = this@Node.name
+                    nation = country
+                }
+            "ssr" ->
+                SSR(
+                    server,
+                    port.toString(),
+                    protocol,
+                    cipher,
+                    obfs,
+                    password,
+                    if (obfs == "plain") "" else `obfs-param` + obfs_param + obfsparam,
+                    `protocol-param` + `protocol_param` + protocolparam
+                )
+                    .apply {
+                        remarks = this@Node.name
+                        nation = country
+                    }
+            //
+            "vmess" ->
+                V2ray(
+                        aid = alterId,
+                        add = server,
+                        port = port.toString(),
+                        id = uuid,
+                        net = network,
+                        tls = if (tls) "true" else ""
+                    )
+                    .apply {
+                        path = if (network == "ws") `ws-path` else ""
+                        host = if (network == "ws") `ws-headers`["Host"] ?: "" else ""
+                        ps = this@Node.name
+                        nation = country
+                    }
 
-//            {"name":"Relay_🇨🇦CA-🇨🇦CA_30","server":"t3.ssrsub.one","type":"trojan","country":"🇨🇦CA","port":443,"password":"a0Ndyox5","skip-cert-verify":true,"udp":true}
-            "trojan" -> Trojan(password, server, port.toString()).apply {
-                this.remark = this@Node.name
-                nation = country
-            }
+            //
+            // {"name":"Relay_🇨🇦CA-🇨🇦CA_30","server":"t3.ssrsub.one","type":"trojan","country":"🇨🇦CA","port":443,"password":"a0Ndyox5","skip-cert-verify":true,"udp":true}
+            "trojan" ->
+                Trojan(password, server, port.toString()).apply {
+                    this.remark = this@Node.name
+                    nation = country
+                }
             else -> NoSub
         }
     }

@@ -15,6 +15,7 @@ interface Uri {
 }
 
 sealed class Sub : Uri
+
 object NoSub : Sub() {
     override fun toUri() = "nosub"
     override fun info() = "nosub"
@@ -26,50 +27,33 @@ object NoSub : Sub() {
         set(value) {}
     override var serverPort = 80
     override val SERVER = "nosub"
-
 }
 
 data class V2ray(
-    /**
-     * address  服务器
-     */
+    /** address 服务器 */
     var add: String = "",
     var port: String = "",
-    /**
-     * uuid
-     */
+    /** uuid */
     var id: String = "",
-    /**
-     * alertId
-     */
+    /** alertId */
     var aid: String = "0",
     var scy: String = "auto",
-    /**
-     * network
-     */
+    /** network */
     var net: String = "tcp",
 
-    /**
-     * 伪装域名
-     */
+    /** 伪装域名 */
     var host: String = "",
-    /**
-     * 伪装路径
-     */
+    /** 伪装路径 */
     var path: String = "",
 
-    /**
-     * 默认false,空串即可
-     */
+    /** 默认false,空串即可 */
     var tls: String = "",
     var sni: String = "",
 ) : Sub() {
     var v: String = "2"
     var ps: String = ""
 
-    /**
-     * 伪装类型 tcp/kcp/QUIC 默认none
-     */
+    /** 伪装类型 tcp/kcp/QUIC 默认none */
     var type: String = "none"
     override fun toUri() = "vmess://${this.toJson().b64Encode()}"
     override fun info() = "$nation $name vmess $add:$port"
@@ -90,12 +74,10 @@ data class SS(
     val pwd: String = "",
     val server: String = "",
     val port: String = "",
-
 ) : Sub() {
     var remark: String = ""
     override var nation: String = ""
-    override fun toUri() =
-        "ss://${"$method:${pwd}@$server:$port".b64Encode()}#${name.urlEncode()}"
+    override fun toUri() = "ss://${"$method:${pwd}@$server:$port".b64Encode()}#${name.urlEncode()}"
 
     override fun info() = "$nation $remark ss $server:$port"
     override var name: String
@@ -142,19 +124,16 @@ data class SSR(
     override val SERVER
         get() = server
     override var nation: String = ""
-
 }
 
-data class Trojan(
-    val password: String = "",
-    val server: String = "",
-    val port: String = ""
-) : Sub() {
+data class Trojan(val password: String = "", val server: String = "", val port: String = "") :
+    Sub() {
     var remark: String = ""
     var query: String = ""
     override fun toUri() = "trojan://${"${password}@$server:$port$params"}#${name.urlEncode()}"
     override fun info() =
-        if (query.isEmpty()) "$nation $name trojan $server:$port" else "$nation $remark trojan $server:$port?$query"
+        if (query.isEmpty()) "$nation $name trojan $server:$port"
+        else "$nation $remark trojan $server:$port?$query"
 
     override var name: String
         get() = remark.takeUnless { it.isEmpty() } ?: "$SERVER:$serverPort-TR-${hashCode()}"

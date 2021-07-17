@@ -2,7 +2,6 @@ package me.leon
 
 import java.io.File
 
-
 val ROOT = File("sub").absolutePath
 val SHARE = "$ROOT/share"
 val SHARE2 = "$ROOT/share/private"
@@ -22,4 +21,3 @@ val NODE_V22 = "$SHARE2/v2"
 val NODE_TR = "$SHARE/tr"
 val NODE_TR2 = "$SHARE2/tr"
 val FAIL_IPS = "$ROOT/socketfail"
-

@@ -1,7 +1,5 @@
 package me.leon.support
 
-import kotlinx.coroutines.newFixedThreadPoolContext
-import me.leon.FAIL_IPS
 import java.io.DataOutputStream
 import java.io.File
 import java.lang.StringBuilder
@@ -10,82 +8,92 @@ import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.system.measureTimeMillis
+import kotlinx.coroutines.newFixedThreadPoolContext
+import me.leon.FAIL_IPS
 
 fun String.readText(charset: Charset = Charsets.UTF_8) =
     File(this).canonicalFile.takeIf { it.exists() }?.readText(charset) ?: ""
 
 fun String.writeLine(txt: String = "") =
-    if (txt.isEmpty()) File(this).also { if (!it.parentFile.exists()) it.parentFile.mkdirs() }.writeText("") else File(
-        this
-    ).appendText("$txt\n")
+    if (txt.isEmpty())
+        File(this).also { if (!it.parentFile.exists()) it.parentFile.mkdirs() }.writeText("")
+    else File(this).appendText("$txt\n")
 
 fun String.readLines() = File(this).takeIf { it.exists() }?.readLines() ?: mutableListOf()
-fun String.readFromNet() = try {
-    String(
-        (URL(this)
-            .openConnection().apply {
-//                setRequestProperty("Referer", "https://pc.woozooo.com/mydisk.php")
-                connectTimeout = 30000
-                readTimeout = 30000
-                setRequestProperty("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8")
-                setRequestProperty(
-                    "user-agent",
-                    "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
-                )
-            } as HttpURLConnection).takeIf {
-//            println("$this __ ${it.responseCode}")
-            it.responseCode == 200
-        }?.inputStream?.readBytes() ?: "".toByteArray()
-    )
-} catch (e: Exception) {
-    e.printStackTrace()
-    println("$this read err ${e.message}")
-    ""
-}
+
+fun String.readFromNet() =
+    try {
+        String(
+            (URL(this).openConnection().apply {
+                    //                setRequestProperty("Referer",
+                    // "https://pc.woozooo.com/mydisk.php")
+                    connectTimeout = 30000
+                    readTimeout = 30000
+                    setRequestProperty("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8")
+                    setRequestProperty(
+                        "user-agent",
+                        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
+                    )
+                } as
+                    HttpURLConnection)
+                .takeIf {
+                    //            println("$this __ ${it.responseCode}")
+                    it.responseCode == 200
+                }
+                ?.inputStream
+                ?.readBytes()
+                ?: "".toByteArray()
+        )
+    } catch (e: Exception) {
+        e.printStackTrace()
+        println("$this read err ${e.message}")
+        ""
+    }
 
 fun String.b64Decode() = String(Base64.getDecoder().decode(this))
+
 fun String.b64SafeDecode() =
     if (this.contains(":")) this
     else
         try {
-            String(
-                Base64.getDecoder().decode(
-                    this.trim().replace("_", "/")
-                        .replace("-", "+")
-                )
-            )
+            String(Base64.getDecoder().decode(this.trim().replace("_", "/").replace("-", "+")))
         } catch (e: Exception) {
             println("failed: $this ${e.message}")
             ""
         }
 
-
 fun String.b64Encode() = Base64.getEncoder().encodeToString(this.toByteArray())
-fun String.b64EncodeNoEqual() = Base64.getEncoder().encodeToString(this.toByteArray()).replace("=", "")
+
+fun String.b64EncodeNoEqual() =
+    Base64.getEncoder().encodeToString(this.toByteArray()).replace("=", "")
+
 fun String.urlEncode() = URLEncoder.encode(this)
+
 fun String.urlDecode() = URLDecoder.decode(this)
 
 fun String.queryParamMap() =
-    "(\\w+)=([^&]*)".toRegex().findAll(this)?.fold(mutableMapOf<String, String>()) { acc, matchResult ->
+    "(\\w+)=([^&]*)".toRegex().findAll(this)?.fold(mutableMapOf<String, String>()) {
+        acc,
+        matchResult ->
         acc.apply { acc[matchResult.groupValues[1]] = matchResult.groupValues[2] }
     }
 
 fun String.queryParamMapB64() =
-    "(\\w+)=([^&]*)".toRegex()
-        .findAll(this)
-        ?.fold(mutableMapOf<String, String>()) { acc, matchResult ->
-            acc.apply {
-                acc[matchResult.groupValues[1]] =
-                    matchResult.groupValues[2].urlDecode().replace(" ", "+").b64SafeDecode()
-            }
+    "(\\w+)=([^&]*)".toRegex().findAll(this)?.fold(mutableMapOf<String, String>()) {
+        acc,
+        matchResult ->
+        acc.apply {
+            acc[matchResult.groupValues[1]] =
+                matchResult.groupValues[2].urlDecode().replace(" ", "+").b64SafeDecode()
         }
-
+    }
 
 fun Int.slice(group: Int): MutableList<IntRange> {
     val slice = kotlin.math.ceil(this.toDouble() / group.toDouble()).toInt()
     return (0 until group).foldIndexed(mutableListOf()) { index, acc, i ->
         acc.apply {
-            acc.add(slice * index until ((slice * (i + 1)).takeIf { group - 1 != index } ?: this@slice)
+            acc.add(
+                slice * index until ((slice * (i + 1)).takeIf { group - 1 != index } ?: this@slice)
             )
         }
     }
@@ -93,11 +101,9 @@ fun Int.slice(group: Int): MutableList<IntRange> {
 
 fun <T> Any?.safeAs(): T? = this as? T
 
-/**
- * ip + port 测试
- */
-
+/** ip + port 测试 */
 val Nop = { _: String, _: Int -> false }
+
 fun String.connect(
     port: Int = 80,
     timeout: Int = 1000,
@@ -105,23 +111,18 @@ fun String.connect(
     exceptionHandler: (info: String) -> Unit = {}
 ) =
     if (!contains(".") || port < 0 || cache.invoke(this, port)) {
-//        println("quick fail from cache")
+        //        println("quick fail from cache")
         -1
     } else {
         try {
-            measureTimeMillis {
-                Socket().connect(InetSocketAddress(this, port), timeout)
-            }
+            measureTimeMillis { Socket().connect(InetSocketAddress(this, port), timeout) }
         } catch (e: Exception) {
             exceptionHandler.invoke("$this:$port")
             -1
         }
     }
 
-
-/**
- * ping 测试
- */
+/** ping 测试 */
 fun String.ping(
     timeout: Int = 1000,
     cache: (ip: String, port: Int) -> Boolean = Nop,
@@ -140,54 +141,55 @@ fun String.ping(
                 exceptionHandler.invoke(this)
                 -1
             }
-
         } catch (e: Exception) {
             println("ping err $this")
             exceptionHandler.invoke(this)
             -1
         }
 
-val failIpPorts by lazy {
-    FAIL_IPS.readLines().toHashSet()
-}
+val failIpPorts by lazy { FAIL_IPS.readLines().toHashSet() }
 val fails = mutableSetOf<String>()
-fun String.quickConnect(
-    port: Int = 80,
-    timeout: Int = 1000
-) = this.connect(port, timeout, { ip, port ->
-    failIpPorts.contains(ip) || fails.contains("$ip:$port") || failIpPorts.contains("$ip:$port")
-}) {
-//    println("error $it")
-    fails.add(it)
-    FAIL_IPS.writeLine(it)
-}
 
-fun String.quickPing(
-    timeout: Int = 1000
-) = this.ping(timeout, { ip, _ ->
-    failIpPorts.contains(ip) || fails.contains(ip)
-}) {
-    println("error $it")
-    fails.add(it)
-    FAIL_IPS.writeLine(it)
-}
+fun String.quickConnect(port: Int = 80, timeout: Int = 1000) =
+    this.connect(
+        port,
+        timeout,
+        { ip, port ->
+            failIpPorts.contains(ip) ||
+                fails.contains("$ip:$port") ||
+                failIpPorts.contains("$ip:$port")
+        }
+    ) {
+        //    println("error $it")
+        fails.add(it)
+        FAIL_IPS.writeLine(it)
+    }
+
+fun String.quickPing(timeout: Int = 1000) =
+    this.ping(timeout, { ip, _ -> failIpPorts.contains(ip) || fails.contains(ip) }) {
+        println("error $it")
+        fails.add(it)
+        FAIL_IPS.writeLine(it)
+    }
 
 val DISPATCHER = newFixedThreadPoolContext(Runtime.getRuntime().availableProcessors() * 2, "pool")
-
 
 fun String.toFile() = File(this)
 
 fun String.post(params: MutableMap<String, String>) =
-
     try {
-        val p = params.keys.foldIndexed(StringBuilder()) { index, acc, s ->
-            acc.also {
-                acc.append("${"&".takeUnless { index == 0 } ?: ""}$s=${params[s]}")
-            }
-        }.toString()
+        val p =
+            params
+                .keys
+                .foldIndexed(StringBuilder()) { index, acc, s ->
+                    acc.also { acc.append("${"&".takeUnless { index == 0 } ?: ""}$s=${params[s]}") }
+                }
+                .toString()
         String(
             URL(this)
-                .openConnection().safeAs<HttpURLConnection>()?.apply {
+                .openConnection()
+                .safeAs<HttpURLConnection>()
+                ?.apply {
                     requestMethod = "POST"
                     setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
                     setRequestProperty("Referer", "https://pc.woozooo.com/mydisk.php")
@@ -201,13 +203,15 @@ fun String.post(params: MutableMap<String, String>) =
                     doInput = true
                     doOutput = true
 
-                    DataOutputStream(outputStream).use {
-                        it.writeBytes(p)
-                    }
-                }?.takeIf {
-//            println("$this __ ${it.responseCode}")
+                    DataOutputStream(outputStream).use { it.writeBytes(p) }
+                }
+                ?.takeIf {
+                    //            println("$this __ ${it.responseCode}")
                     it.responseCode == 200
-                }?.inputStream?.readBytes() ?: "".toByteArray()
+                }
+                ?.inputStream
+                ?.readBytes()
+                ?: "".toByteArray()
         )
     } catch (e: Exception) {
         println("$this read err ${e.message}")
@@ -217,8 +221,5 @@ fun String.post(params: MutableMap<String, String>) =
 fun Any.timeStamp(timeZone: String = "Asia/Shanghai"): String {
     val instance = Calendar.getInstance()
     TimeZone.setDefault(TimeZone.getTimeZone(timeZone))
-    return SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(
-        instance.time
-    )
+    return SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(instance.time)
 }
-

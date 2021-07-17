@@ -1,12 +1,12 @@
 package me.leon
 
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import me.leon.domain.Sumurai
 import me.leon.support.*
 import org.junit.jupiter.api.Test
-import java.text.SimpleDateFormat
-import java.util.*
 
 class NetworkSubTest {
     @Test
@@ -18,63 +18,59 @@ class NetworkSubTest {
                 .map { it to async(DISPATCHER) { it.SERVER.quickConnect(it.serverPort, 1000) } }
                 .filter { it.second.await() > -1 }
                 .also { println(it.size) }
-                .forEach {
-                    println(it.first.info() + ":" + it.second)
-                }
+                .forEach { println(it.first.info() + ":" + it.second) }
         }
 
         listOf(
             e,
-        ).forEach {
-            kotlin.runCatching {
-                Parser.parseFromSub(it)
-                    .also { println(it.size) }
-
-                    .joinToString(
-//                        "|",
-                        "\r\n",
-                        transform = Sub::toUri
-                    )
-                    .also {
-                        println("___________")
-                        println(it)
+        )
+            .forEach {
+                kotlin
+                    .runCatching {
+                        Parser.parseFromSub(it)
+                            .also { println(it.size) }
+                            .joinToString(
+                                //                        "|",
+                                "\r\n",
+                                transform = Sub::toUri
+                            )
+                            .also {
+                                println("___________")
+                                println(it)
+                            }
                     }
-            }.onFailure {
-                it.printStackTrace()
+                    .onFailure { it.printStackTrace() }
             }
-        }
     }
 
-    /**
-     * 去除推广
-     */
+    /** 去除推广 */
     @Test
     fun subRemarkModify() {
-//        val e = "https://zyzmzyz.netlify.app/Clash.yml"
-//        val e = "https://www.linbaoz.com/clash/proxies"
+        //        val e = "https://zyzmzyz.netlify.app/Clash.yml"
+        //        val e = "https://www.linbaoz.com/clash/proxies"
         Parser.debug
         listOf(
-//            "https://fu.stgod.com/clash/proxies",
-//            "https://free.mengbai.cf/clash/proxies",
-//            "https://emby.luoml.eu.org/clash/proxies",
+            //            "https://fu.stgod.com/clash/proxies",
+            //            "https://free.mengbai.cf/clash/proxies",
+            //            "https://emby.luoml.eu.org/clash/proxies",
             "https://proxy.yugogo.xyz/vmess/sub",
         )
             .forEach {
-                kotlin.runCatching {
-                    Parser.parseFromSub(it)
-                        .joinToString(
-//                        "|",
-                            "\r\n"
-                        ) {
-                            it.apply { name = name.replace("\\([^)]+\\)".toRegex(), "") }.info()
-                        }
-                        .also {
-                            println("___________")
-                            println(it)
-                        }
-                }.onFailure {
-                    it.printStackTrace()
-                }
+                kotlin
+                    .runCatching {
+                        Parser.parseFromSub(it)
+                            .joinToString(
+                                //                        "|",
+                                "\r\n"
+                            ) {
+                                it.apply { name = name.replace("\\([^)]+\\)".toRegex(), "") }.info()
+                            }
+                            .also {
+                                println("___________")
+                                println(it)
+                            }
+                    }
+                    .onFailure { it.printStackTrace() }
             }
     }
 
@@ -93,14 +89,12 @@ class NetworkSubTest {
 
     @Test
     fun load() {
-        "http://pan-yz.chaoxing.com/download/downloadfile?fleid=607981566887628800&puid=137229880".readFromNet()
+        "http://pan-yz.chaoxing.com/download/downloadfile?fleid=607981566887628800&puid=137229880"
+            .readFromNet()
             .also { println(it) }
             .split("\r\n|\n".toRegex())
-            .forEach {
-                println(it)
-            }
+            .forEach { println(it) }
     }
-
 
     @Test
     fun parseNet() {
@@ -110,35 +104,38 @@ class NetworkSubTest {
             .b64Decode()
             .foldIndexed(StringBuilder()) { index, acc, c ->
                 acc.also { acc.append((c.code xor key[index % key.length].code).toChar()) }
-            }.also {
-                println(it)
             }
+            .also { println(it) }
             .split("\n")
-            .also {
-                println(it.joinToString("|"))
-            }
+            .also { println(it.joinToString("|")) }
     }
 
     @Test
     fun parseSumaraiVpn() {
-        val speed = SPEED_TEST_RESULT.readLines().fold(mutableMapOf<String, String>()) { acc, s ->
-            acc.apply {
-                acc[s.substringBeforeLast('|')] = s.substringAfterLast('|')
-            }
-        }.also { println(it) }
+        val speed =
+            SPEED_TEST_RESULT
+                .readLines()
+                .fold(mutableMapOf<String, String>()) { acc, s ->
+                    acc.apply { acc[s.substringBeforeLast('|')] = s.substringAfterLast('|') }
+                }
+                .also { println(it) }
 
         runBlocking {
-            "https://server.svipvpn.com/opconf.json".readFromNet()
+            "https://server.svipvpn.com/opconf.json"
+                .readFromNet()
                 .fromJson<Sumurai>()
-                .data.items.flatMap { it.items }
+                .data
+                .items
+                .flatMap { it.items }
                 .mapNotNull { Parser.parse(it.ovpn.b64Decode()) }
                 .map { it to async(DISPATCHER) { it.SERVER.connect(it.serverPort, 2000) } }
                 .filter { it.second.await() > -1 }
-//                .filter { speed.keys.contains(it.first.name) }
+                //                .filter { speed.keys.contains(it.first.name) }
                 .forEach {
                     println(
                         it.first
-//                        .apply { name = name.substringBeforeLast('|') + "|" + speed[name] }
+                            //                        .apply { name = name.substringBeforeLast('|')
+                            // + "|" + speed[name] }
                             .toUri()
                     )
                 }

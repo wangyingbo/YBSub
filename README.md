@@ -78,7 +78,7 @@ github服务器筛选(每天自动更新):
 - [v2ray](https://raw.fastgit.org/Leon406/Sub/master/sub/share/v2)
 - [trojan](https://raw.fastgit.org/Leon406/Sub/master/sub/share/tr)
 
-本地服务器筛选(不定时更新),可自行clone项目,执行localFilter.bat生成
+本地服务器筛选(不定时更新)  [节点详情](./sub/info2.md),可自行clone项目,执行localFilter.bat生成
 
 - [本地ss](https://raw.fastgit.org/Leon406/Sub/master/sub/share/private/ss)
 - [本地ssr](https://raw.fastgit.org/Leon406/Sub/master/sub/share/private/ssr)

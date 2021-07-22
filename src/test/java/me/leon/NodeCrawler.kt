@@ -10,6 +10,8 @@ class NodeCrawler {
     companion object {
         private val nodeInfo = "$ROOT/info.md"
         private const val customInfo = "防失效github.com/Leon406/Sub "
+        private var subCount = 0
+        private var nodeCount = 0
         val REG_AD =
             """ new\b|Youtube- MiDnight来了|adi\|\d{4} *- *|顺丰资源You[tT]ube[ |]?|@vpnhat|NB云\|-|TG@peekfun|\{彩虹云}|flyxxl赞助|\([^)]{5,}\)|（.*）|节点更新 ?https?://.+|@SSRSUB-|-付费推荐:.+/ssrsub|https://www.mattkaydiary.com|tg@freebaipiao|@github.com/colatiger-|github.com/freefq - """.toRegex()
         private val REG_AD_REPALCE =
@@ -53,17 +55,17 @@ class NodeCrawler {
         runBlocking {
             subs
                 .filterNot { it.trim().startsWith("#") || it.trim().isEmpty() }
-                .also { println("共有订阅源：${it.size}") }
+                .also { println("共有订阅源：${it.size.also { subCount = it }}") }
                 .map { sub ->
                     sub to
-                        async(DISPATCHER) {
-                            try {
-                                Parser.parseFromSub(sub).also { println("$sub ${it.size} ") }
-                            } catch (e: Exception) {
-                                println("___parse failed $sub  ${e.message}")
-                                linkedSetOf()
+                            async(DISPATCHER) {
+                                try {
+                                    Parser.parseFromSub(sub).also { println("$sub ${it.size} ") }
+                                } catch (e: Exception) {
+                                    println("___parse failed $sub  ${e.message}")
+                                    linkedSetOf()
+                                }
                             }
-                        }
                 }
                 .map { it.first to it.second.await() }
                 .fold(linkedSetOf<Sub>()) { acc, linkedHashSet ->
@@ -80,7 +82,7 @@ class NodeCrawler {
                         }
                         .toUri()
                 }
-                .also { POOL.writeLine(it.joinToString("\n") { it.toUri() }) }
+                .also { POOL.writeLine(it.also { nodeCount = it.size }.joinToString("\n") { it.toUri() }) }
         }
     }
 
@@ -96,11 +98,13 @@ class NodeCrawler {
                 Parser.parseFromSub(POOL)
                     .map { it to async(DISPATCHER) { it.SERVER.quickConnect(it.serverPort, 2000) } }
                     .filter { it.second.await() > -1 }
-                    .also { println("333") }
                     .also {
                         println(
-                            "有效节点数量 ${it.size}".also {
-                                nodeInfo.writeLine("更新时间${timeStamp()}\r\n\r\n" + "**$it**")
+                            "有效节点: ${it.size}".also {
+                                nodeInfo.writeLine("更新时间${timeStamp()}\r\n")
+                                nodeInfo.writeLine("**总订阅: $subCount**")
+                                nodeInfo.writeLine("**总节点: $nodeCount**")
+                                nodeInfo.writeLine("**$it**")
                             }
                         )
                     }
@@ -213,10 +217,6 @@ class NodeCrawler {
                 if (it.name.isEmpty()) println(it.toUri())
                 it
             }
-            //            .mapIndexed { i,item->
-            //                if (item.name == "adi|0622 - 罗马尼亚 71")
-            //                    println(i)
-            //                item.name }
             .chunked(200)
             .mapIndexed { index, list ->
                 list.map(Sub::toUri).subList(0.takeIf { index == 0 } ?: 0, list.size).also {
@@ -236,8 +236,8 @@ class NodeCrawler {
     fun speedTestResultParse() {
         val map =
             Parser.parseFromSub(NODE_OK).also { println(it.size) }.fold(
-                    mutableMapOf<String, Sub>()
-                ) { acc, sub -> acc.apply { acc[sub.name] = sub } }
+                mutableMapOf<String, Sub>()
+            ) { acc, sub -> acc.apply { acc[sub.name] = sub } }
         NODE_SS2.writeLine()
         NODE_SSR2.writeLine()
         NODE_V22.writeLine()

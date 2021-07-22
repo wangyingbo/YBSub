@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test
 class NodeCrawler {
     companion object {
         private val nodeInfo = "$ROOT/info.md"
+        private val nodeInfoLocal = "$ROOT/info2.md"
         private const val customInfo = "防失效github.com/Leon406/Sub "
         private var subCount = 0
         private var nodeCount = 0
@@ -156,11 +157,13 @@ class NodeCrawler {
     fun localUse() {
         runBlocking {
             NODE_OK.writeLine()
+            nodeInfoLocal.writeLine()
+            nodeInfoLocal.writeLine("更新时间${timeStamp()}\r\n")
             Parser.parseFromSub(POOL)
-                .also { println("总共数量 ${it.size}") }
+                .also { nodeInfoLocal.writeLine("**节点总数: ${it.size}**\n") }
                 .map { it to async(DISPATCHER) { it.SERVER.quickConnect(it.serverPort, 1000) } }
                 .filter { it.second.await() > -1 }
-                .also { println("有效节点数量 ${it.size}") }
+                .also { nodeInfoLocal.writeLine("**有效节点数: ${it.size}**\n") }
                 .map { it.first }
                 .toHashSet()
                 .also { NODE_OK.writeLine(it.joinToString("\n") { it.toUri() }) }
@@ -173,13 +176,22 @@ class NodeCrawler {
                 u.firstOrNull()?.run { name = customInfo + name }
                 val data = u.joinToString("\n") { it.toUri() }.b64Encode()
                 when (t) {
-                    SS::class.java -> NODE_SS2.writeLine(data).also { println("ss节点: ${u.size}") }
+                    SS::class.java ->
+                        NODE_SS2.writeLine(data).also {
+                            nodeInfoLocal.writeLine("- ss节点: ${u.size}")
+                        }
                     SSR::class.java ->
-                        NODE_SSR2.writeLine(data).also { println("ssr节点: ${u.size}") }
+                        NODE_SSR2.writeLine(data).also {
+                            nodeInfoLocal.writeLine("- ssr节点: ${u.size}")
+                        }
                     V2ray::class.java ->
-                        NODE_V22.writeLine(data).also { println("v2ray节点: ${u.size}") }
+                        NODE_V22.writeLine(data).also {
+                            nodeInfoLocal.writeLine("- v2ray节点: ${u.size}")
+                        }
                     Trojan::class.java ->
-                        NODE_TR2.writeLine(data).also { println("trojan节点: ${u.size}") }
+                        NODE_TR2.writeLine(data).also {
+                            nodeInfoLocal.writeLine("- trojan节点: ${u.size}")
+                        }
                 }
             }
         }
@@ -286,5 +298,10 @@ class NodeCrawler {
                         NODE_TR2.writeLine(data).also { println("trojan节点: ${u.size}") }
                 }
             }
+    }
+
+    @Test
+    fun t() {
+        println(System.lineSeparator())
     }
 }

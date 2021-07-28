@@ -2,23 +2,18 @@
 
 - https://github.com/JACKUSR2089/v2ray-subscribed
 - https://github.com/clashconfig/online
-- https://github.com/coolapijust/cxkv2-
 - https://github.com/fly0426/fj
 - [自由之梦](https://github.com/zyzmzyz/free-nodes)
-- https://github.com/lion12776/kejilion
-- [freebaipiao](https://github.com/freebaipiao/freebaipiao)
-- [不良人](https://github.com/bujilangren/cangku/)
 - https://github.com/colatiger/v2ray-nodes
 - :star:https://github.com/freefq/free
 - https://github.com/skywolf627/VmessActions
+- [不良人](https://github.com/bujilangren/cangku/)
 - [huaxinCLU/NodeSpider](https://github.com/huaxinCLUB/NodeSpider)s
 - [pojiezhiyuanjun/freev2](https://github.com/pojiezhiyuanjun/freev2)
 - https://github.com/adiwzx/freenode
 
 ## 节点池
 
-- http://60.205.189.25/
-- http://8.136.5.236
 - https://233660.xyz/
 - [bihai](https://proxies.bihai.cf)
 - http://emby.luoml.eu.org
@@ -32,7 +27,6 @@
 - https://hm2019721.ml/
 - https://outseen.tk/
 - https://proxy.51798.xyz/
-- https://proxy.purel.in/
 - https://proxypool-guest997.herokuapp.com/
 - https://proxypool.fly.dev/
 - https://ss.dswang.ga:8443/
@@ -52,10 +46,9 @@
 - [つつの]( https://sub.tsutsu.cc/)
 - [con8](https://www.con8.tk/)
 - [品云](https://id9.cc/)
-- [碧海大佬](https://sub.bihai.ml/)
+- [碧海](https://sub.bihai.ml/)
 - [肥羊转换](https://sub.mcwy.cloud/)
 - [边缘]( https://bianyuan.xyz/)
-- [weleven11](https://sub.weleven11.com/)
 - [github acl4ssr-sub](https://acl4ssr-sub.github.io/)
 - [subcon.dlj.tf](https://subcon.dlj.tf/)
 - [subconv](https://subconv.ml/)

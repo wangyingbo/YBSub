@@ -1,7 +1,5 @@
 package me.leon.support
 
-import kotlinx.coroutines.asCoroutineDispatcher
-import me.leon.FAIL_IPS
 import java.io.DataOutputStream
 import java.io.File
 import java.net.*
@@ -10,6 +8,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Executors
 import kotlin.system.measureTimeMillis
+import kotlinx.coroutines.asCoroutineDispatcher
+import me.leon.FAIL_IPS
 
 fun String.readText(charset: Charset = Charsets.UTF_8) =
     File(this).canonicalFile.takeIf { it.exists() }?.readText(charset) ?: ""
@@ -25,16 +25,16 @@ fun String.readFromNet() =
     try {
         String(
             (URL(this).openConnection().apply {
-                //                setRequestProperty("Referer",
-                // "https://pc.woozooo.com/mydisk.php")
-                connectTimeout = 30000
-                readTimeout = 30000
-                setRequestProperty("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8")
-                setRequestProperty(
-                    "user-agent",
-                    "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
-                )
-            } as
+                    //                setRequestProperty("Referer",
+                    // "https://pc.woozooo.com/mydisk.php")
+                    connectTimeout = 30000
+                    readTimeout = 30000
+                    setRequestProperty("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8")
+                    setRequestProperty(
+                        "user-agent",
+                        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
+                    )
+                } as
                     HttpURLConnection)
                 .takeIf {
                     //            println("$this __ ${it.responseCode}")
@@ -153,9 +153,7 @@ fun String.quickConnect(port: Int = 80, timeout: Int = 1000) =
         port,
         timeout,
         { ip, p ->
-            failIpPorts.contains(ip) ||
-                    fails.contains("$ip:$p") ||
-                    failIpPorts.contains("$ip:$p")
+            failIpPorts.contains(ip) || fails.contains("$ip:$p") || failIpPorts.contains("$ip:$p")
         }
     ) {
         //    println("error $it")
@@ -170,7 +168,9 @@ fun String.quickPing(timeout: Int = 1000) =
         FAIL_IPS.writeLine(it)
     }
 
-val DISPATCHER = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2).asCoroutineDispatcher()
+val DISPATCHER =
+    Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2)
+        .asCoroutineDispatcher()
 
 fun String.toFile() = File(this)
 

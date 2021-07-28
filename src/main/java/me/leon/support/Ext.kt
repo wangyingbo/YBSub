@@ -71,14 +71,14 @@ fun String.urlEncode() = URLEncoder.encode(this)
 fun String.urlDecode() = URLDecoder.decode(this)
 
 fun String.queryParamMap() =
-    "(\\w+)=([^&]*)".toRegex().findAll(this)?.fold(mutableMapOf<String, String>()) {
+    "(\\w+)=([^&]*)".toRegex().findAll(this).fold(mutableMapOf<String, String>()) {
         acc,
         matchResult ->
         acc.apply { acc[matchResult.groupValues[1]] = matchResult.groupValues[2] }
     }
 
 fun String.queryParamMapB64() =
-    "(\\w+)=([^&]*)".toRegex().findAll(this)?.fold(mutableMapOf<String, String>()) {
+    "(\\w+)=([^&]*)".toRegex().findAll(this).fold(mutableMapOf<String, String>()) {
         acc,
         matchResult ->
         acc.apply {
@@ -98,7 +98,7 @@ fun Int.slice(group: Int): MutableList<IntRange> {
     }
 }
 
-fun <T> Any?.safeAs(): T? = this as? T
+fun <T> Any?.safeAs(): T? = this as? T?
 
 /** ip + port 测试 */
 val Nop = { _: String, _: Int -> false }
@@ -217,7 +217,7 @@ fun String.post(params: MutableMap<String, String>) =
         ""
     }
 
-fun Any.timeStamp(timeZone: String = "Asia/Shanghai"): String {
+fun timeStamp(timeZone: String = "Asia/Shanghai"): String {
     val instance = Calendar.getInstance()
     TimeZone.setDefault(TimeZone.getTimeZone(timeZone))
     return SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(instance.time)

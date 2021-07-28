@@ -1,14 +1,15 @@
 package me.leon.support
 
+import kotlinx.coroutines.asCoroutineDispatcher
+import me.leon.FAIL_IPS
 import java.io.DataOutputStream
 import java.io.File
 import java.net.*
 import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.Executors
 import kotlin.system.measureTimeMillis
-import kotlinx.coroutines.newFixedThreadPoolContext
-import me.leon.FAIL_IPS
 
 fun String.readText(charset: Charset = Charsets.UTF_8) =
     File(this).canonicalFile.takeIf { it.exists() }?.readText(charset) ?: ""
@@ -24,16 +25,16 @@ fun String.readFromNet() =
     try {
         String(
             (URL(this).openConnection().apply {
-                    //                setRequestProperty("Referer",
-                    // "https://pc.woozooo.com/mydisk.php")
-                    connectTimeout = 30000
-                    readTimeout = 30000
-                    setRequestProperty("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8")
-                    setRequestProperty(
-                        "user-agent",
-                        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
-                    )
-                } as
+                //                setRequestProperty("Referer",
+                // "https://pc.woozooo.com/mydisk.php")
+                connectTimeout = 30000
+                readTimeout = 30000
+                setRequestProperty("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8")
+                setRequestProperty(
+                    "user-agent",
+                    "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
+                )
+            } as
                     HttpURLConnection)
                 .takeIf {
                     //            println("$this __ ${it.responseCode}")
@@ -66,21 +67,19 @@ fun String.b64Encode() = Base64.getEncoder().encodeToString(this.toByteArray())
 fun String.b64EncodeNoEqual() =
     Base64.getEncoder().encodeToString(this.toByteArray()).replace("=", "")
 
-fun String.urlEncode() = URLEncoder.encode(this)
+fun String.urlEncode() = URLEncoder.encode(this) ?: ""
 
-fun String.urlDecode() = URLDecoder.decode(this)
+fun String.urlDecode() = URLDecoder.decode(this) ?: ""
 
 fun String.queryParamMap() =
-    "(\\w+)=([^&]*)".toRegex().findAll(this).fold(mutableMapOf<String, String>()) {
-        acc,
-        matchResult ->
+    "(\\w+)=([^&]*)".toRegex().findAll(this).fold(mutableMapOf<String, String>()) { acc, matchResult
+        ->
         acc.apply { acc[matchResult.groupValues[1]] = matchResult.groupValues[2] }
     }
 
 fun String.queryParamMapB64() =
-    "(\\w+)=([^&]*)".toRegex().findAll(this).fold(mutableMapOf<String, String>()) {
-        acc,
-        matchResult ->
+    "(\\w+)=([^&]*)".toRegex().findAll(this).fold(mutableMapOf<String, String>()) { acc, matchResult
+        ->
         acc.apply {
             acc[matchResult.groupValues[1]] =
                 matchResult.groupValues[2].urlDecode().replace(" ", "+").b64SafeDecode()
@@ -153,10 +152,10 @@ fun String.quickConnect(port: Int = 80, timeout: Int = 1000) =
     this.connect(
         port,
         timeout,
-        { ip, port ->
+        { ip, p ->
             failIpPorts.contains(ip) ||
-                fails.contains("$ip:$port") ||
-                failIpPorts.contains("$ip:$port")
+                    fails.contains("$ip:$p") ||
+                    failIpPorts.contains("$ip:$p")
         }
     ) {
         //    println("error $it")
@@ -171,7 +170,7 @@ fun String.quickPing(timeout: Int = 1000) =
         FAIL_IPS.writeLine(it)
     }
 
-val DISPATCHER = newFixedThreadPoolContext(Runtime.getRuntime().availableProcessors() * 2, "pool")
+val DISPATCHER = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2).asCoroutineDispatcher()
 
 fun String.toFile() = File(this)
 

@@ -61,6 +61,7 @@
 - 在线测速
     - [品云](http://gz.cloudtest.cc/)
     - [a.cloudtest.icu](http://a.cloudtest.icu/)
+    - [阿里云VPS在线测速](http://us-or-cera-2.natfrp.cloud:10543/)
 
 ## 本项目生成base64订阅 [节点详情](./sub/info.md)  ![ci](https://github.com/Leon406/Sub/actions/workflows/ci.yml/badge.svg)
 

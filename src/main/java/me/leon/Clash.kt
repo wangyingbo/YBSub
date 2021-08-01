@@ -51,7 +51,7 @@ data class Node(
     var network: String = "",
     var `protocol-param`: String = "",
     var server: String = "",
-    var servername: String = "",
+    var servername: String = ""
 ) {
     var `ws-headers`: LinkedHashMap<String, String> = linkedMapOf()
     var `http-opts`: LinkedHashMap<String, String> = linkedMapOf()
@@ -130,5 +130,5 @@ data class Group(
     var url: String = "",
     var interval: Int = 0,
     var tolerance: Int = 0,
-    var proxies: List<String> = mutableListOf(),
+    var proxies: List<String> = mutableListOf()
 )

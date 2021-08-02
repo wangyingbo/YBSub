@@ -59,14 +59,14 @@ class NodeCrawler {
                 .also { println("共有订阅源：${it.size.also { subCount = it }}") }
                 .map { sub ->
                     sub to
-                            async(DISPATCHER) {
-                                try {
-                                    Parser.parseFromSub(sub).also { println("$sub ${it.size} ") }
-                                } catch (e: Exception) {
-                                    println("___parse failed $sub  ${e.message}")
-                                    linkedSetOf()
-                                }
+                        async(DISPATCHER) {
+                            try {
+                                Parser.parseFromSub(sub).also { println("$sub ${it.size} ") }
+                            } catch (e: Exception) {
+                                println("___parse failed $sub  ${e.message}")
+                                linkedSetOf()
                             }
+                        }
                 }
                 .map { it.first to it.second.await() }
                 .fold(linkedSetOf<Sub>()) { acc, linkedHashSet ->
@@ -253,8 +253,8 @@ class NodeCrawler {
     fun speedTestResultParse() {
         val map =
             Parser.parseFromSub(NODE_OK).also { println(it.size) }.fold(
-                mutableMapOf<String, Sub>()
-            ) { acc, sub -> acc.apply { acc[sub.name] = sub } }
+                    mutableMapOf<String, Sub>()
+                ) { acc, sub -> acc.apply { acc[sub.name] = sub } }
         NODE_SS2.writeLine()
         NODE_SSR2.writeLine()
         NODE_V22.writeLine()

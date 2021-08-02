@@ -13,8 +13,8 @@ class SpeedResultTest {
     fun speedTestResultParse2() {
         val map =
             Parser.parseFromSub("C:/Users/Leon/Desktop/clash.txt").also { println(it.size) }.fold(
-                mutableMapOf<String, Sub>()
-            ) { acc, sub -> acc.apply { acc[sub.name] = sub } }
+                    mutableMapOf<String, Sub>()
+                ) { acc, sub -> acc.apply { acc[sub.name] = sub } }
 
         println(map)
         NODE_SS2.writeLine()

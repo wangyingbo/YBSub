@@ -161,6 +161,7 @@ class NodeCrawler {
             nodeInfoLocal.writeLine("更新时间${timeStamp()}\r\n")
             Parser.parseFromSub(POOL)
                 .also { nodeInfoLocal.writeLine("**节点总数: ${it.size}**\n") }
+                .filter { if (it is SSR) it.method != "rc4" else true }
                 .map { it to async(DISPATCHER) { it.SERVER.quickConnect(it.serverPort, 1000) } }
                 .filter { it.second.await() > -1 }
                 .also { nodeInfoLocal.writeLine("**有效节点数: ${it.size}**\n") }

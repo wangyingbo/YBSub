@@ -26,13 +26,15 @@ object Parser {
                     override fun checkClientTrusted(
                         chain: Array<X509Certificate?>?,
                         authType: String?
-                    ) {}
+                    ) {
+                    }
 
                     @Throws(CertificateException::class)
                     override fun checkServerTrusted(
                         chain: Array<X509Certificate?>?,
                         authType: String?
-                    ) {}
+                    ) {
+                    }
 
                     override fun getAcceptedIssuers(): Array<X509Certificate> {
                         return arrayOf()
@@ -71,6 +73,7 @@ object Parser {
                     .b64SafeDecode()
                     .also { "parseV2ray base64 decode: ".debug(it) }
                     .fromJson<V2ray>()
+                    .takeIf { it.id.length == 36 && !it.add.contains("baidu.com") }
             }
                 ?: return null
         } catch (e: Exception) {
@@ -89,7 +92,7 @@ object Parser {
             var decoded =
                 groupValues[2].takeUnless { it.contains("@") }?.b64Decode()
                 // 兼容异常
-                ?: with(groupValues[2]) {
+                    ?: with(groupValues[2]) {
                         "${substringBefore('@').b64Decode()}${substring(indexOf('@'))}".also {
                             "parseSs b64 format correct".debug("___$it")
                         }
@@ -188,8 +191,8 @@ object Parser {
         return try {
             if (data.contains("proxies:"))
             // 移除yaml中的标签
-            (Yaml(Constructor(Clash::class.java))
-                        .load(data.replace("!<[^>]+>".toRegex(), "").also { it.debug() }) as
+                (Yaml(Constructor(Clash::class.java))
+                    .load(data.replace("!<[^>]+>".toRegex(), "").also { it.debug() }) as
                         Clash)
                     .proxies
                     .asSequence()

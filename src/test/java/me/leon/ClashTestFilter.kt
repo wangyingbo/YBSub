@@ -9,13 +9,20 @@ class ClashTestFilter {
 
     @Test
     fun parseClashLog() {
-        val url = "https://sub.cm/RwvVWlS"
+//        tr  https://sub.cm/LtHIdxd
+//        ssr https://sub.cm/TTgunAH
+//        v2 https://sub.cm/w8HCJno
+//        ss https://sub.cm/FLJ17fi
+        val url = "https://sub.cm/8AyVhsC"
         // clash_win/Cache 目录下日志文件
-        val clashLogPath = "C:/Users/Leon/Desktop/f_00ff41"
+        val clashLogPath = "C:/Users/Leon/Desktop/f_001f4b"
 
         val nodeMap =
             Parser.parseFromSub(url).fold(mutableMapOf<String, Sub>()) { acc, sub ->
-                acc.apply { acc[sub.name] = sub }
+                acc.apply {
+                    println(sub.name)
+                    acc[sub.name] = sub
+                }
             }
 
         clashLogPath

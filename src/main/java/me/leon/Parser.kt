@@ -26,15 +26,13 @@ object Parser {
                     override fun checkClientTrusted(
                         chain: Array<X509Certificate?>?,
                         authType: String?
-                    ) {
-                    }
+                    ) {}
 
                     @Throws(CertificateException::class)
                     override fun checkServerTrusted(
                         chain: Array<X509Certificate?>?,
                         authType: String?
-                    ) {
-                    }
+                    ) {}
 
                     override fun getAcceptedIssuers(): Array<X509Certificate> {
                         return arrayOf()
@@ -92,7 +90,7 @@ object Parser {
             var decoded =
                 groupValues[2].takeUnless { it.contains("@") }?.b64Decode()
                 // 兼容异常
-                    ?: with(groupValues[2]) {
+                ?: with(groupValues[2]) {
                         "${substringBefore('@').b64Decode()}${substring(indexOf('@'))}".also {
                             "parseSs b64 format correct".debug("___$it")
                         }
@@ -191,8 +189,8 @@ object Parser {
         return try {
             if (data.contains("proxies:"))
             // 移除yaml中的标签
-                (Yaml(Constructor(Clash::class.java))
-                    .load(data.replace("!<[^>]+>".toRegex(), "").also { it.debug() }) as
+            (Yaml(Constructor(Clash::class.java))
+                        .load(data.replace("!<[^>]+>".toRegex(), "").also { it.debug() }) as
                         Clash)
                     .proxies
                     .asSequence()

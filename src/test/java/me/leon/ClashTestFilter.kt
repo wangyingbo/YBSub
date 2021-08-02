@@ -9,10 +9,10 @@ class ClashTestFilter {
 
     @Test
     fun parseClashLog() {
-//        tr  https://sub.cm/LtHIdxd
-//        ssr https://sub.cm/TTgunAH
-//        v2 https://sub.cm/w8HCJno
-//        ss https://sub.cm/FLJ17fi
+        //        tr  https://sub.cm/LtHIdxd
+        //        ssr https://sub.cm/TTgunAH
+        //        v2 https://sub.cm/w8HCJno
+        //        ss https://sub.cm/FLJ17fi
         val url = "https://sub.cm/8AyVhsC"
         // clash_win/Cache 目录下日志文件
         val clashLogPath = "C:/Users/Leon/Desktop/f_001f4b"

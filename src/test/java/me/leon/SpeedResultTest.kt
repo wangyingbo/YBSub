@@ -1,30 +1,20 @@
 package me.leon
 
 import me.leon.NodeCrawler.Companion.REG_AD
-import me.leon.domain.ClashConnectLog
-import me.leon.support.*
+import me.leon.support.b64Encode
+import me.leon.support.readLines
+import me.leon.support.removeFlags
+import me.leon.support.writeLine
 import org.junit.jupiter.api.Test
 
 class SpeedResultTest {
 
     @Test
-    fun parseClashLog() {
-        // clash_win/Cache 目录下日志文件
-        val clashLogPath = "C:/Users/Leon/Desktop/f_00ce5e"
-        clashLogPath
-            .readText()
-            .fromJson<ClashConnectLog>()
-            .proxies
-            .filter { it.value.isNode && it.value.history.last().delay > 0 }
-            .forEach { (t, u) -> println("${t.substring(5)}  ${u.history.last().delay}") }
-    }
-
-    @Test
     fun speedTestResultParse2() {
         val map =
             Parser.parseFromSub("C:/Users/Leon/Desktop/clash.txt").also { println(it.size) }.fold(
-                    mutableMapOf<String, Sub>()
-                ) { acc, sub -> acc.apply { acc[sub.name] = sub } }
+                mutableMapOf<String, Sub>()
+            ) { acc, sub -> acc.apply { acc[sub.name] = sub } }
 
         println(map)
         NODE_SS2.writeLine()

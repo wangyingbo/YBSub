@@ -45,10 +45,6 @@ class ExtTest {
 
     @Test
     fun trojanTest() {
-        val url =
-            "trojan://4806bfec-c8ca-4688-b513-f6214ea52e58@32vus.ednovas.me:443#Relay_%F0%9F%87%BA%F0%9F%87%B8US-%F0%9F%87%BA%F0%9F%87%B8US_320\n"
-        val url2 =
-            "trojan://qN7AKCF3@t6.ssrsub.one:8443#Relay_%F0%9F%87%B7%F0%9F%87%BARU-%F0%9F%87%B7%F0%9F%87%BARU_192"
         val url3 = "trojan://N8l9RGMa@t2.ssrsub.one:8443?sni=t2.ssrsub.one"
         println(Parser.parse(url3)?.toUri())
     }
@@ -56,11 +52,13 @@ class ExtTest {
     @Test
     fun queryParse() {
         val q =
-            "obfsparam=ZG93bmxvYWQud2luZG93c3VwZGF0ZS5jb20&protoparam=MTQzMDczOkN6OGFPaQ&remarks=6aaZ5rivLUI&group=MQ"
+            "obfsparam=ZG93bmxvYWQud2luZG93c3VwZGF0ZS5jb20&protoparam=" +
+                "MTQzMDczOkN6OGFPaQ&remarks=6aaZ5rivLUI&group=MQ"
         println(q.queryParamMap())
 
         val q2 =
-            "obfsparam=&protoparam=dC5tZS9TU1JTVUI&remarks=UmVsYXlf8J+HqPCfh6ZDQS3wn4eo8J+HpkNBXzQxOSB8IDMuNTNNYg&group="
+            "obfsparam=&protoparam=" +
+                "dC5tZS9TU1JTVUI&remarks=UmVsYXlf8J+HqPCfh6ZDQS3wn4eo8J+HpkNBXzQxOSB8IDMuNTNNYg&group="
         println(q2.queryParamMapB64())
     }
 

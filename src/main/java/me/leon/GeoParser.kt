@@ -2,6 +2,7 @@ package me.leon
 
 import com.maxmind.db.CHMCache
 import com.maxmind.geoip2.DatabaseReader
+import java.io.IOException
 import java.net.InetAddress
 import me.leon.GeoParser.cityReader
 import me.leon.GeoParser.countryReader
@@ -28,7 +29,8 @@ object GeoParser {
 fun String.ipCountryZh() =
     try {
         countryReader.country(this.toInetAddress()).country.names["zh-CN"]
-    } catch (e: Exception) {
+    } catch (e: IOException) {
+        println("ipCountryZh error ${e.message}")
         "UNKNOWN"
     }
 

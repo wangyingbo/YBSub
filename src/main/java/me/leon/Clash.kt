@@ -69,12 +69,11 @@ data class Node(
     var `protocol_param`: String = ""
     var protocolparam: String = ""
     var obfsparam: String = ""
-    fun node(): Sub? {
+
+    fun toNode(): Sub {
         // 兼容某些异常节点池
         if (server == "NULL") return NoSub
         return when (type) {
-            //
-            // {"name":"Pool_🇦🇱AL_04","server":"31.171.154.221","type":"ss","country":"🇦🇱AL","port":39772,"password":"CUndSZnYsPKcu6Kj8THVMBHD","cipher":"aes-256-gcm"}
             "ss" ->
                 SS(cipher, password, server, port.toString()).apply {
                     remark = this@Node.name
@@ -95,7 +94,6 @@ data class Node(
                         remarks = this@Node.name
                         nation = country
                     }
-            //
             "vmess" ->
                 V2ray(
                         aid = alterId,
@@ -111,9 +109,6 @@ data class Node(
                         ps = this@Node.name
                         nation = country
                     }
-
-            //
-            // {"name":"Relay_🇨🇦CA-🇨🇦CA_30","server":"t3.ssrsub.one","type":"trojan","country":"🇨🇦CA","port":443,"password":"a0Ndyox5","skip-cert-verify":true,"udp":true}
             "trojan" ->
                 Trojan(password, server, port.toString()).apply {
                     this.remark = this@Node.name

@@ -1,5 +1,6 @@
 package me.leon
 
+import com.google.gson.JsonSyntaxException
 import java.security.SecureRandom
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
@@ -26,13 +27,17 @@ object Parser {
                     override fun checkClientTrusted(
                         chain: Array<X509Certificate?>?,
                         authType: String?
-                    ) {}
+                    ) {
+                        // if needed
+                    }
 
                     @Throws(CertificateException::class)
                     override fun checkServerTrusted(
                         chain: Array<X509Certificate?>?,
                         authType: String?
-                    ) {}
+                    ) {
+                        // if needed
+                    }
 
                     override fun getAcceptedIssuers(): Array<X509Certificate> {
                         return arrayOf()
@@ -47,8 +52,8 @@ object Parser {
             sslsc.sessionTimeout = 0
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.socketFactory)
             HttpsURLConnection.setDefaultHostnameVerifier { _, _ -> true }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (_: Exception) {
+            // if neede
         }
     }
 
@@ -66,16 +71,16 @@ object Parser {
     fun parseV2ray(uri: String): V2ray? {
         "parseV2ray ".debug(uri)
         try {
+            var v2ray:V2ray? = null
             REG_SCHEMA_HASH.matchEntire(uri)?.run {
-                return groupValues[2]
+                v2ray = groupValues[2]
                     .b64SafeDecode()
                     .also { "parseV2ray base64 decode: ".debug(it) }
                     .fromJson<V2ray>()
                     .takeIf { it.id.length == 36 && !it.add.contains("baidu.com") }
             }
-                ?: return null
-        } catch (e: Exception) {
-            e.printStackTrace()
+            return v2ray
+        } catch (e: JsonSyntaxException) {
             println(uri)
             "parseV2ray err".debug(uri)
             return null
@@ -165,7 +170,7 @@ object Parser {
                     Clash)
                 .proxies
                 .asSequence()
-                .mapNotNull(Node::node)
+                .mapNotNull(Node::toNode)
                 .fold(linkedSetOf()) { acc, sub -> acc.also { acc.add(sub) } }
         else
             data
@@ -194,7 +199,7 @@ object Parser {
                         Clash)
                     .proxies
                     .asSequence()
-                    .mapNotNull(Node::node)
+                    .mapNotNull(Node::toNode)
                     .filterNot { it is NoSub }
                     .fold(linkedSetOf()) { acc, sub -> acc.also { acc.add(sub) } }
             else
@@ -207,8 +212,7 @@ object Parser {
                     .filterNot { it is NoSub }
                     .fold(linkedSetOf()) { acc, sub -> acc.also { acc.add(sub) } }
         } catch (ex: Exception) {
-            println("failed______ $url")
-            ex.printStackTrace()
+            println("failed______ $url ${ex.message}")
             linkedSetOf()
         }
     }

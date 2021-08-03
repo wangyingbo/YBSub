@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 class ConnectTest {
 
     @Test
-    fun connectTest() {
+    fun connect() {
         println("www.baidu.com".connect())
         println("www.baidu.com".ping())
         println("www.baidu.com".connect(443))

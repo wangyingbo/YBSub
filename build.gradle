@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.5.21'
     id "com.diffplug.spotless" version "5.14.1"
+    id "io.gitlab.arturbosch.detekt" version "1.18.0-RC2"
 }
 
 group 'org.example'
@@ -12,11 +13,11 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.5.21'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0'
-    implementation "com.google.code.gson:gson:2.8.6"
+    implementation 'com.google.code.gson:gson:2.8.7'
     //for yaml 1.1
-    implementation "org.yaml:snakeyaml:1.28"
+    implementation 'org.yaml:snakeyaml:1.29'
     //mmdb格式
     implementation 'com.maxmind.geoip2:geoip2:2.15.0'
     //dat格式
@@ -24,12 +25,23 @@ dependencies {
 //    implementation 'com.maxmind.db:maxmind-db:1.2.0'
     //for yaml 1.2
 //    implementation "org.snakeyaml:snakeyaml-engine:2.3"
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
 }
 
 test {
     useJUnitPlatform()
+}
+detekt {
+    allRules = false // activate all available (even unstable) rules.
+    config = files("$rootProject.projectDir/config/detekt.yml") // point to your custom config defining rules to run, overwriting default behavior
+    parallel = true
+    reports {
+        html.enabled = true // observe findings in your browser with structure and code snippets
+        xml.enabled = true // checkstyle like format mainly for integrations like Jenkins
+        txt.enabled = true // similar to the console output, contains issue signature to manually edit baseline files
+        sarif.enabled = true // standardized SARIF format (https://sarifweb.azurewebsites.net/) to support integrations with Github Code Scanning
+    }
 }
 
 spotless {

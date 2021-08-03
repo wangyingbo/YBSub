@@ -71,13 +71,14 @@ object Parser {
     fun parseV2ray(uri: String): V2ray? {
         "parseV2ray ".debug(uri)
         try {
-            var v2ray:V2ray? = null
+            var v2ray: V2ray? = null
             REG_SCHEMA_HASH.matchEntire(uri)?.run {
-                v2ray = groupValues[2]
-                    .b64SafeDecode()
-                    .also { "parseV2ray base64 decode: ".debug(it) }
-                    .fromJson<V2ray>()
-                    .takeIf { it.id.length == 36 && !it.add.contains("baidu.com") }
+                v2ray =
+                    groupValues[2]
+                        .b64SafeDecode()
+                        .also { "parseV2ray base64 decode: ".debug(it) }
+                        .fromJson<V2ray>()
+                        .takeIf { it.id.length == 36 && !it.add.contains("baidu.com") }
             }
             return v2ray
         } catch (e: JsonSyntaxException) {

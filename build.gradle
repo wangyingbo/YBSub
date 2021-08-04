@@ -32,22 +32,7 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-detekt {
-    allRules = false // activate all available (even unstable) rules.
-    config = files("$rootProject.projectDir/config/detekt.yml") // point to your custom config defining rules to run, overwriting default behavior
-    parallel = true
-}
-
-spotless {
-    java {
-        target "src/**/*.java"
-        googleJavaFormat('1.8').aosp()
-    }
-    kotlin {
-        target "src/**/*.kt"
-        ktfmt('0.27').kotlinlangStyle()
-    }
-}
+apply from: "$rootProject.projectDir/config/codeQuality.gradle"
 def hook = new File("$rootProject.projectDir/.git/hooks/pre-commit")
 hook.text = """#!/bin/bash
 echo "run code format"

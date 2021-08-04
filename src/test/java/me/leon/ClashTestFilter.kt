@@ -11,7 +11,7 @@ class ClashTestFilter {
         //        ssr https://sub.cm/TTgunAH
         //        v2 https://sub.cm/w8HCJno
         //        ss https://sub.cm/FLJ17fi
-       const val URL = "https://sub.cm/7lWFj2u"
+        const val URL = "https://sub.cm/7lWFj2u"
     }
 
     @Test
@@ -46,7 +46,7 @@ class ClashTestFilter {
         val map =
             Parser.parseFromSub(URL).fold(mutableMapOf<String, Sub>()) { acc, sub ->
                 acc.apply {
-//                    println(sub.name)
+                    //                    println(sub.name)
                     acc[sub.name] = sub
                 }
             }
@@ -61,7 +61,8 @@ class ClashTestFilter {
             .groupBy { map[it.first]!!.javaClass }
             .forEach { (t, u) ->
                 val data =
-                    u.joinToString("\n") {
+                    u
+                        .joinToString("\n") {
                             map[it.first]!!
                                 .apply {
                                     name =
@@ -69,7 +70,7 @@ class ClashTestFilter {
                                             .removeFlags()
                                             .substringBeforeLast('|') + "|" + it.second
                                 }
-//                                .also { println(it.name) }
+                                //                                .also { println(it.name) }
                                 .toUri()
                         }
                         .b64Encode()

@@ -12,9 +12,7 @@ data class Group(
     private val isNode
         get() = type !in listOf("Selector", "URLTest", "Reject", "Direct")
     val hasSpeedTestHistory
-        get() = isNode &&
-                history.isNotEmpty() &&
-                history.last().delay > 0
+        get() = isNode && history.isNotEmpty() && history.last().delay > 0
 }
 
 data class History(val time: String = "", val delay: Int = 0)

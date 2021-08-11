@@ -1,5 +1,6 @@
 package me.leon
 
+import kotlinx.coroutines.async
 import me.leon.domain.ClashConnectLog
 import me.leon.support.*
 import org.junit.jupiter.api.Test
@@ -12,37 +13,60 @@ class ClashTestFilter {
         //        v2 https://sub.cm/w8HCJno
         //        ss https://sub.cm/FLJ17fi
         //        4 in one https://sub.cm/7lWFj2u
-        const val URL = "https://sub.cm/9vJONwY"
+        //        4 in one https://sub.cm/9vJONwY
+        const val URL = "https://sub.cm/7lWFj2u"
+        // clash_win/Cache 目录下日志文件
+        const val clashLogPath = "C:/Users/Leon/Desktop/f_00246d"
     }
 
     @Test
     fun parseClashLog() {
-        // clash_win/Cache 目录下日志文件
-        val clashLogPath = "C:/Users/Leon/Desktop/f_0023c9"
+
         val nodeMap =
             Parser.parseFromSub(URL).fold(mutableMapOf<String, Sub>()) { acc, sub ->
-                acc.apply {
-                    println(sub.name)
-                    acc[sub.name] = sub
-                }
+                acc.apply { acc[sub.name] = sub }
             }
-
+        NodeCrawler.nodeInfoLocal.writeLine("更新时间${timeStamp()}${System.lineSeparator().repeat(2)}",false)
+        NodeCrawler.nodeInfoLocal.writeLine("**节点总数: ${nodeMap.size}**\n")
         clashLogPath
             .readText()
             .fromJson<ClashConnectLog>()
             .proxies
             .filter { it.value.hasSpeedTestHistory }
-            .also {
-                it.forEach { (t, u) -> println("$t  ${u.history.last().delay}") }
-                println()
-            }
+//            .also {
+//                it.forEach { (t, u) -> println("$t  ${u.history.last().delay}") }
+//                println()
+//            }
             .filter { nodeMap[it.key] != null }
             .map { nodeMap[it.key] }
             .also {
                 println("_______ ${it.size}")
+                NodeCrawler.nodeInfoLocal.writeLine("**有效节点数: ${it.size}**\n")
                 println(it.joinToString("\n") { it!!.toUri() })
             }
-            .forEach { println(it!!.name) }
+            .groupBy { it?.javaClass }.forEach { (t, u) ->
+                u.firstOrNull()?.run { name = NodeCrawler.customInfo + name }
+                val data = u.joinToString("\n") { it!!.toUri() }.b64Encode()
+                when (t) {
+                    SS::class.java ->
+                        NODE_SS2.writeLine(data,false).also {
+                            NodeCrawler.nodeInfoLocal.writeLine("- ss节点: ${u.size}")
+                        }
+                    SSR::class.java ->
+                        NODE_SSR2.writeLine(data,false).also {
+                            NodeCrawler.nodeInfoLocal.writeLine("- ssr节点: ${u.size}")
+                        }
+                    V2ray::class.java ->
+                        NODE_V22.writeLine(data,false).also {
+                            NodeCrawler.nodeInfoLocal.writeLine("- v2ray节点: ${u.size}")
+                        }
+                    Trojan::class.java ->
+                        NODE_TR2.writeLine(data,false).also {
+                            NodeCrawler.nodeInfoLocal.writeLine("- trojan节点: ${u.size}")
+                        }
+                }
+            }
+
     }
 
     @Test

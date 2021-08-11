@@ -11,13 +11,14 @@ class ClashTestFilter {
         //        ssr https://sub.cm/TTgunAH
         //        v2 https://sub.cm/w8HCJno
         //        ss https://sub.cm/FLJ17fi
-        const val URL = "https://sub.cm/7lWFj2u"
+        //        4 in one https://sub.cm/7lWFj2u
+        const val URL = "https://sub.cm/9vJONwY"
     }
 
     @Test
     fun parseClashLog() {
         // clash_win/Cache 目录下日志文件
-        val clashLogPath = "C:/Users/Leon/Desktop/f_0022c6"
+        val clashLogPath = "C:/Users/Leon/Desktop/f_0023c9"
         val nodeMap =
             Parser.parseFromSub(URL).fold(mutableMapOf<String, Sub>()) { acc, sub ->
                 acc.apply {
@@ -37,7 +38,10 @@ class ClashTestFilter {
             }
             .filter { nodeMap[it.key] != null }
             .map { nodeMap[it.key] }
-            .also { println(it.joinToString("\n") { it!!.toUri() }) }
+            .also {
+                println("_______ ${it.size}")
+                println(it.joinToString("\n") { it!!.toUri() })
+            }
             .forEach { println(it!!.name) }
     }
 

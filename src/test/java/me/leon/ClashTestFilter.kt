@@ -16,7 +16,7 @@ class ClashTestFilter {
         //        4 in one https://sub.cm/9vJONwY
         const val URL = "https://sub.cm/7lWFj2u"
         // clash_win/Cache 目录下日志文件
-        const val clashLogPath = "C:/Users/Leon/Desktop/f_00246d"
+        const val clashLogPath = "C:/Users/Leon/Desktop/f_000331"
     }
 
     @Test

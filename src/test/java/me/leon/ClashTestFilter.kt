@@ -31,6 +31,7 @@ class ClashTestFilter {
         println("_______ 订阅节点数量 ${nodeMap.size}")
         NodeCrawler.nodeInfoLocal.writeLine("更新时间${timeStamp()}${System.lineSeparator().repeat(2)}", false)
         NodeCrawler.nodeInfoLocal.writeLine("**节点总数: ${nodeMap.size}**\n")
+        cleanPrivateShare()
         clashLogPath
             .readText()
             .fromJson<ClashConnectLog>()
@@ -52,29 +53,37 @@ class ClashTestFilter {
                     name =
                         name.takeUnless { it.contains(NodeCrawler.customInfo) } ?: (
                                 NodeCrawler.customInfo + name)
+                    println(" 111111 $name")
                 }
                 val data = u.joinToString("\n") { it!!.toUri() }.b64Encode()
 //                println(u.joinToString("\n") { it!!.name })
                 when (t) {
                     SS::class.java ->
-                        NODE_SS2.writeLine(data, false).also {
+                        NODE_SS2.writeLine(data).also {
                             NodeCrawler.nodeInfoLocal.writeLine("- ss节点: ${u.size}")
                         }
                     SSR::class.java ->
-                        NODE_SSR2.writeLine(data, false).also {
+                        NODE_SSR2.writeLine(data).also {
                             NodeCrawler.nodeInfoLocal.writeLine("- ssr节点: ${u.size}")
                         }
                     V2ray::class.java ->
-                        NODE_V22.writeLine(data, false).also {
+                        NODE_V22.writeLine(data).also {
                             NodeCrawler.nodeInfoLocal.writeLine("- v2ray节点: ${u.size}")
                         }
                     Trojan::class.java ->
-                        NODE_TR2.writeLine(data, false).also {
+                        NODE_TR2.writeLine(data).also {
                             NodeCrawler.nodeInfoLocal.writeLine("- trojan节点: ${u.size}")
                         }
                 }
             }
 
+    }
+
+    private fun cleanPrivateShare() {
+        NODE_SSR2.writeLine()
+        NODE_SS2.writeLine()
+        NODE_TR2.writeLine()
+        NODE_V22.writeLine()
     }
 
     @Test

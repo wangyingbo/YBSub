@@ -1,6 +1,5 @@
 package me.leon
 
-import kotlinx.coroutines.async
 import me.leon.domain.ClashConnectLog
 import me.leon.support.*
 import org.junit.jupiter.api.Test
@@ -94,6 +93,24 @@ class ClashTestFilter {
             .map { it.substringBeforeLast('|') to it.substringAfterLast('|') }
             .sortedByDescending { it.second.replace("Mb|MB".toRegex(), "").toFloat() }
             .filter { map[it.first] != null }
+            .also {
+                val data =
+                    it.joinToString("\n") {
+                            map[it.first]!!
+                                .apply {
+                                    name =
+                                        name.replace(NodeCrawler.REG_AD, "")
+                                            .removeFlags()
+                                            .substringBeforeLast('|') + "|" + it.second
+                                }
+                                //                                .also { println(it.name) }
+                                .toUri()
+                        }
+                        .b64Encode()
+
+                println(data)
+                println()
+            }
             .groupBy { map[it.first]!!.javaClass }
             .forEach { (t, u) ->
                 val data =

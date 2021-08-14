@@ -16,7 +16,7 @@ class ClashTestFilter {
         //        4 in one https://sub.cm/9vJONwY
         const val URL = "https://sub.cm/7lWFj2u"
         // clash_win/Cache 目录下日志文件
-        const val clashLogPath = "C:/Users/Leon/Desktop/f_000331"
+        const val clashLogPath = "C:/Users/Leon/Desktop/f_014b4f"
     }
 
     @Test
@@ -26,6 +26,8 @@ class ClashTestFilter {
             Parser.parseFromSub(URL).fold(mutableMapOf<String, Sub>()) { acc, sub ->
                 acc.apply { acc[sub.name] = sub }
             }
+
+        println("_______ 订阅节点数量 ${nodeMap.size}")
         NodeCrawler.nodeInfoLocal.writeLine("更新时间${timeStamp()}${System.lineSeparator().repeat(2)}",false)
         NodeCrawler.nodeInfoLocal.writeLine("**节点总数: ${nodeMap.size}**\n")
         clashLogPath

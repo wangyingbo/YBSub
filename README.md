@@ -2,13 +2,10 @@
 
 - https://github.com/JACKUSR2089/v2ray-subscribed
 - https://github.com/clashconfig/online
-- https://github.com/fly0426/fj
 - [自由之梦](https://github.com/zyzmzyz/free-nodes)
 - https://github.com/colatiger/v2ray-nodes
 - :star:https://github.com/freefq/free
 - https://github.com/skywolf627/VmessActions
-- [不良人](https://github.com/bujilangren/cangku/)
-- [huaxinCLU/NodeSpider](https://github.com/huaxinCLUB/NodeSpider)s
 - [pojiezhiyuanjun/freev2](https://github.com/pojiezhiyuanjun/freev2)
 - https://github.com/adiwzx/freenode
 
@@ -27,7 +24,6 @@
 - https://hm2019721.ml/
 - https://outseen.tk/
 - https://proxy.51798.xyz/
-- https://proxypool-guest997.herokuapp.com/
 - https://proxypool.fly.dev/
 - https://ss.dswang.ga:8443/
 - https://sspool.herokuapp.com/

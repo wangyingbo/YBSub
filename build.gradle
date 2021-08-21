@@ -1,12 +1,12 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.5.21'
-    id "com.diffplug.spotless" version "5.14.1"
-    id "io.gitlab.arturbosch.detekt" version "1.18.0-RC2"
+    id "com.diffplug.spotless" version "5.14.2"
+    id "io.gitlab.arturbosch.detekt" version "1.18.0"
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group 'me.leon'
+version '1.1.0'
 
 repositories {
     mavenCentral()
@@ -14,8 +14,8 @@ repositories {
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.5.21'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0'
-    implementation 'com.google.code.gson:gson:2.8.7'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1'
+    implementation 'com.google.code.gson:gson:2.8.8'
     //for yaml 1.1
     implementation 'org.yaml:snakeyaml:1.29'
     //mmdb格式

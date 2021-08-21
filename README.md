@@ -52,8 +52,9 @@
 
 ## 节点测速
 
-- [本地测速](https://github.com/tindy2013/stairspeedtest-reborn)
-
+- 本地测速
+    - [stairspeedtest-reborn](https://github.com/tindy2013/stairspeedtest-reborn)
+    - [nodescatch](https://bit.ly/nodescatch101) 
 - 在线测速
     - [品云](http://gz.cloudtest.cc/)
     - [a.cloudtest.icu](http://a.cloudtest.icu/)

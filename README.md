@@ -109,7 +109,7 @@ github服务器筛选(每天自动更新):
 
 ## Stargazers over time
 
-[![Stargazers over time](https://starchart.cc/wangyingbo/YBSub.svg)](https://starchart.cc/wangyingbo/YBSub)
+[![Stargazers over time](https://starchart.cc/Leon406/Sub.svg)](https://starchart.cc/Leon406/Sub)
 
 ## 声明
 

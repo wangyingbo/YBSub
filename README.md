@@ -60,21 +60,21 @@
     - [a.cloudtest.icu](http://a.cloudtest.icu/)
     - [阿里云VPS在线测速](http://us-or-cera-2.natfrp.cloud:10543/)
 
-## 本项目生成base64订阅 [节点详情](./sub/info.md)  ![ci](https://github.com/Leon406/Sub/actions/workflows/ci.yml/badge.svg)
+## 本项目生成base64订阅 [节点详情](./sub/info.md)  ![ci](https://github.com/wangyingbo/YBSub/actions/workflows/ci.yml/badge.svg)
 
 github服务器筛选(每天自动更新):
 
-- [ss](https://raw.fastgit.org/Leon406/Sub/master/sub/share/ss)
-- [ssr](https://raw.fastgit.org/Leon406/Sub/master/sub/share/ssr)
-- [v2ray](https://raw.fastgit.org/Leon406/Sub/master/sub/share/v2)
-- [trojan](https://raw.fastgit.org/Leon406/Sub/master/sub/share/tr)
+- [ss](https://raw.fastgit.org/wangyingbo/YBSub/master/sub/share/ss)
+- [ssr](https://raw.fastgit.org/wangyingbo/YBSub/master/sub/share/ssr)
+- [v2ray](https://raw.fastgit.org/wangyingbo/YBSub/master/sub/share/v2)
+- [trojan](https://raw.fastgit.org/wangyingbo/YBSub/master/sub/share/tr)
 
 本地服务器筛选(不定时更新)  [节点详情](./sub/info2.md),可自行clone项目,执行localFilter.bat生成
 
-- [本地ss](https://raw.fastgit.org/Leon406/Sub/master/sub/share/private/ss)
-- [本地ssr](https://raw.fastgit.org/Leon406/Sub/master/sub/share/private/ssr)
-- [本地v2ray](https://raw.fastgit.org/Leon406/Sub/master/sub/share/private/v2)
-- [本地trojan](https://raw.fastgit.org/Leon406/Sub/master/sub/share/private/tr)
+- [本地ss](https://raw.fastgit.org/wangyingbo/YBSub/master/sub/share/private/ss)
+- [本地ssr](https://raw.fastgit.org/wangyingbo/YBSub/master/sub/share/private/ssr)
+- [本地v2ray](https://raw.fastgit.org/wangyingbo/YBSub/master/sub/share/private/v2)
+- [本地trojan](https://raw.fastgit.org/wangyingbo/YBSub/master/sub/share/private/tr)
 
 > 如需多个订阅,不同格式,请自行使用[订阅转换](#subCon)进行转换
 
@@ -109,7 +109,7 @@ github服务器筛选(每天自动更新):
 
 ## Stargazers over time
 
-[![Stargazers over time](https://starchart.cc/Leon406/Sub.svg)](https://starchart.cc/Leon406/Sub)
+[![Stargazers over time](https://starchart.cc/wangyingbo/YBSub.svg)](https://starchart.cc/wangyingbo/YBSub)
 
 ## 声明
 
